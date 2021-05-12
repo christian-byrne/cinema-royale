@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<title> By|Myself </title>
+
+
+<style>
+  /* Video Grid */
+  .row_items {
+    border-width: 4px;
+    margin-top: -4px;
+    margin-left: -4px;
+    padding: 12px;
+    border-radius: 2px;
+    box-sizing: border-box;
+    width: calc(49.5% + 2px);
+    background-clip: border-box;
+    background-image: url("pictures/stars-bg.jpg");
+    background-blend-mode: color;
+  }
+
+  .row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding-top: 1px;
+    padding-left: 1px;
+    height: calc(55% + 6px);
+    box-sizing: border-box;
+    margin: auto;
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0);
+    background: transparent;
+  }
+
+  .grid {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    min-height: 130%;
+  }
+
+  /* Quake Terminal */
+  .terminal {
+    --size: 1.5;
+    --link-color: blue;
+    --error-color: red;
+    --background: rgba(0, 0, 0, 0.9);
+  }
+
+</style>
+
+<head>
+  <!-- Starry Night SASS Compiled  -->
+  <link rel="stylesheet" href="css//pixel_starry_night.css">
+
+  <!-- JQuery -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+
+</head>
+
+<body>
+  <div id="stars"></div>
+  <div id="stars2"></div>
+  <div id="stars3"></div>
+
+  <!-- Quake Terminal -->
+  <div id="term" class="term" style="display: block;">
+
+
+
+  <!-- Video Grid -->
+  <div class="grid">
+    <div class="row">
+      <video class="row_items" muted loop style="align-self: flex-start;" id="video_one">
+        <source src="videos\megashots.mp4#t=840" type="video/mp4">
+      </video>
+      <video class="row_items" muted loop style="align-self: flex-end;" id="video_two">
+        <source src="videos\MegaAnime.mp4" type="video/mp4">
+      </video>
+    </div>
+
+    <div class="row">
+      <video class="row_items" muted loop style="align-self: flex-start; margin-top: 6px;" id="video_three">
+        <source src="videos\megashots2.mp4" type="video/mp4">
+      </video>
+      <video loop class="row_items" style="align-self: flex-end;" id="video_four">
+        <source src="videos\megashots.mp4" type="video/mp4">
+      </video>
+    </div>
+  </div>
+</body>
+
+<script> 
+// #endregion --------------------------------------------------------------
+// #region                Global Variables
+//-------------------------------------------------------------------------- 
+
+  var p1Score = p2Score = p3Score = p4score = 0
+  
+
+  // Frame Selection Possible Args
+  var play1 = [1, "one", "first", "top left", "top", "left"]
+  var play2 = [2, "two", "second", "top right", "top", "right"]
+  var play3 = [3, "three", "third", "bottom left", "bottom", "left"]
+  var play4 = [4, "four", "fourth", "bottom right", "bottom", "right"]
+  var playtop = ["1row", "row1", "onerow", "firstrow", "top", "toprow"]
+  var playbot = ["2row", "tworow", "secondrow", "bottom", "bot"]
+  var playright = ["right", "rightcolumn", "column2", "columntwo"]
+  var playleft = ["left", "left2", "leftcolumn", "column1", "columnone"]
+  var playall = [4, "allfour", "every", "everyone", "total", "all", "both", "complete"]
+  dictionaryList = [play1, play2, play3, play4, playtop, playbot, playright, playleft, playall] 
+  var mute1 = [1, "one", "first", "top left", "top", "all", "left", "left column", "top row", "everything", "al"]
+  var mute2 = [2, "two", "second", "top right", "top", "all", "right", "right column", "top row", "everything", "al"]
+  var mute3 = [3, "three", "third", "bottom left", "bottom", "all", "left", "left column", "bottomrow", "everything", "al"]
+  var mute4 = [4, "four", "fourth", "bottom right", "bottom", "all", "right", "right column", "bottomrow", "everything", "al"]
+  muteDictionary_list = [mute1, mute2, mute3, mute4]
+  var inputMatch = [[0], [1], [2], [3], [0, 1], [2, 3], [1, 3], [0, 2], [0, 1, 2, 3]]
+  
+  // Frame Sources
+  videoList = [document.getElementById("video_one"), document.getElementById("video_two"), document.getElementById("video_three"), document.getElementById("video_four")]
+
+// #endregion --------------------------------------------------------------
+// #region                Answer Checker
+//-------------------------------------------------------------------------- 
+
+  var answerKey = { "g": [0, 10], "slumdog millionaire": [0, 10] }
+
+  function timeCheck(playerAnswer, keyNumber, index1, index2, index3, index4) {
+  index2 = index2 || undefined
+  index3 = index3 || undefined
+  index4 = index4 || undefined
+  currentVid_time = [ videoList[0].currentTime, videoList[1].currentTime, videoList[2].currentTime, videoList[3].currentTime, ]
+
+  for (const property in answerKey) {
+
+    // if answer matches a property from answer key object
+    if (property.includes(playerAnswer)) {
+
+      // VIDEO 1: check if any index key hits match with current time
+      if (currentVid_time[index1] >= keyNumber[property[0]] && currentVid_time[index1] <= keyNumber[property[1]]) {
+        return "correct"
+      }
+
+      // --VIDEO 2-- (optional)   
+      if (index3 != undefined) {
+        if (currentVid_time[index2] >= keyNumber[property[0]] && currentVid_time[index2] <= keyNumber[property[1]]) {
+          return "correct"
+        }
+      }
+
+      // --VIDEO 3-- (optional)
+      if (index3 != undefined) {
+        if (currentVid_time[index3] >= keyNumber[property[0]] && currentVid_time[index3] <= keyNumber[property[1]]) {
+          return "correct"
+        }        
+      }
+
+      // --VIDEO 4-- (optional)
+      if (index3 != undefined) {
+        if (currentVid_time[index4] >= keyNumber[property[0]] && currentVid_time[index4] <= keyNumber[property[1]]) {
+          return "correct"
+        }        
+      }
+
+    }
+  }
+}
+
+// #endregion --------------------------------------------------------------
+// #region                Input Correction
+//-------------------------------------------------------------------------- 
+  String.prototype.strip = function (char) {
+    return this.replace(new RegExp("^" + char + "*"), '').
+      replace(new RegExp(char + "*$"), '');
+  }
+
+  $.extend_if_has = function (desc, source, array) {
+    for (var i = array.length; i--;) {
+      if (typeof source[array[i]] != 'undefined') {
+        desc[array[i]] = source[array[i]];
+      }
+    }
+    return desc;
+  };
+
+// #endregion --------------------------------------------------------------
+// #region                Quake Term
+//--------------------------------------------------------------------------  
+
+  (function ($) {
+    $.fn.term = function (eval, options) {
+      if ($('body').data('term')) {
+        return $('body').data('term').terminal;
+      }
+      this.addClass('term');
+      options = options || {};
+      eval = eval || function (command, term) {
+        term.echo("you don't set eval for term");
+      };
+      var settings = {
+
+        // SETTINGS Property of Terminal  \\           
+        prompt: '>>',
+        name: 'term',
+        height: 250,
+        enabled: true,
+        greetings: "When the videos pause, players type the name of the movie on one of the two frames on their side.\nPlayers alternate turns getting to decide when to pause.\nThere are different strategies for choosing your pause times.\n\n+2 for correct answer.\n-1 for wrong answer/no answer\nPause videos with ~ Key\n\nType 'start' to start game",
+        checkArity: false,
+        history: true,
+        memory: true,
+        keypress: function (e) {
+          if (e.which == 96) {
+            return false;
+          }
+          /* if (e.which == 192 || 32) {
+            settings.prompt.pop();
+          } */
+        }
+      };
+      if (options) {
+        $.extend(settings, options);
+      }
+      this.append('<div class="td"></div>');
+      var self = this;
+      self.terminal = this.find('.td').terminal(eval, settings);
+      var focus = false;
+
+      // Quake Functionality 
+      $(document.documentElement).keypress(function (e) {
+        if (e.which == 96) {
+          self.slideToggle('fast');
+          self.terminal.focus(focus = !focus);
+          self.terminal.attr({
+            scrollTop: self.terminal.attr("scrollHeight")
+          });
+          
+        }
+      });
+      $('body').data('term', this);
+      return self;
+      // Activate to hide on load:
+      // this.hide();
+      
+      
+    };
+  }) (jQuery);
+  
+
+// #endregion --------------------------------------------------------------
+// #region                Global Control Hotkeys 
+//--------------------------------------------------------------------------  
+     
+      // Binding Tilde ~ Key to play/pause all videos
+      // Tilde keycode = 192
+      // Add other hotkeys?
+        $(document).keydown(function (e) {
+          if (e.which == 192) {
+            for (const i of videoList) {
+              if (i.paused == true) {
+                i.play();
+              } else {
+                i.pause();
+              }
+            };
+          };
+
+          // Spacebar pauses/plays when term is hidden
+          if (e.which == 32 ) {
+            if (jQuery("#term").css('display') == 'none') {
+              for (const i of videoList) {
+                if (i.paused == true) {
+                i.play();
+                } else {
+                i.pause();
+              }
+            };
+          };
+        }
+        });
+
+  $(function () {
+    $('#term').term({
+
+// #endregion --------------------------------------------------------------
+// #region                [WATCH] Navigate to Other Videos 
+//--------------------------------------------------------------------------  
+      watch: function (video) {
+        var mega4x4 = ["4x4megashots", "4x4", "4x4loopgrid", "4x4grid", "loopgrid", "megagrid", "megashotsgrid", "mega4x4", "4by4", "loopgrid4x4"]
+        var anime4x4 = ["4x4anime", "anime4x4", "animeloopgrid", "animegrid", "loopgridanime", "animemegagrid", "megashotsgridanime", "megaanime4x4", "anime4by4", "animeloopgrid4x4"]
+        var megashots = ["megashots", "singleframemega", "megasingle", "megaloopsing", "greatestshots", "megashotsplayer", "megashotsfullscreen", "moviemontage", "greatestshots", "holymindloop"]
+        var mega6x6 = ["bigmegashots", "6x6", "6x6player", "oversizedplayer", "megaloopgrid6", "loopgrid6x6", "6by6", "6framesshots", "6x6shots", "6shots"]
+        var mega_with_anime = ["megawithanime", "4x4withanime", "4x4loopwithanime", "normal4x4plusanime", "includinganime", "loopgride1anime", "loopgridoneanime", "originalmegagrid", "gridplusanime", "loopgridwithanime"]
+        var random_video = ["randomvideo", "randomloop", "1x1random", "playlistplayer", "shufflevideos", "randomvideos", "playlistrandom", "shotsrandom", "shuffleshots", "randomplaylistplayer"]
+        if (mega4x4.includes(video) == true) {
+          window.location = "4x4_LoopGrid.html";
+        }
+        else if (anime4x4.includes(video) == true) {
+          window.location = "4x4_Anime.html";
+        }
+        else if (megashots.includes(video) == true) {
+          window.location = "1x1_MegaShots.html";
+        }
+        else if (mega6x6.includes(video) == true) {
+          window.location = "6x6_LoopGrid.html";
+        }
+        else if (mega_with_anime.includes(video) == true) {
+          window.location = "4x4_with_anime.html";
+        }
+        else if (random_video.includes(video) == true) {
+          window.location = "1x1_Random_Video.html";
+        }
+      },
+
+// #endregion --------------------------------------------------------------
+// #region                [MUTE] [VOLUME] 
+//--------------------------------------------------------------------------
+      mute: function (input) {
+        input = input || "fourth"
+        for (const x of muteDictionary_list) {
+          if (x.includes(input)) {
+            var frameIndex = muteDictionary_list.indexOf(x);
+          }
+        }
+        if (frameIndex == undefined) {
+          this.echo('\nUse the "mute" command by indicating the frame you want to play/pause -- \nusing numbers, rows, columns, all, left, right, first, second, etc. to indicate frame\nE.g., "mute top" or "mute third"\n')
+        }
+        else {
+          if (videoList[frameIndex].volume == 0 ) {
+            videoList[frameIndex].volume = 1.0;
+          } else {
+            videoList[frameIndex].volume = 0;
+          };
+        }
+      },
+      volume: function (input) {
+        input = input || "fourth"
+        for (const x of muteDictionary_list) {
+          if (x.includes(input)) {
+            var frameIndex = muteDictionary_list.indexOf(x);
+          }
+        }
+        if (frameIndex == undefined) {
+          this.echo('\nUse the "mute" command by indicating the frame you want to play/pause -- \nusing numbers, rows, columns, all, left, right, first, second, etc. to indicate frame\nE.g., "mute top" or "mute third"\n')
+        }
+        else {
+          if (videoList[frameIndex].volume == 0) {
+            videoList[frameIndex].volume = 1.0;
+          } else {
+            videoList[frameIndex].volume = 0;
+          };
+        }
+      },
+// #endregion --------------------------------------------------------------
+// #region                [PLAY] [PAUSE]
+//--------------------------------------------------------------------------
+      play: function (input) {
+        input = input || "all"
+        for (const x of dictionaryList) {
+          if (x.includes(input)) {
+            var frameIndex = dictionaryList.indexOf(x);
+          }
+        }
+        if (frameIndex == undefined) {
+          this.echo('\nUse the "play" command by indicating the frame you want to play/pause -- \nusing numbers, rows, columns, all, left, right, first, second, etc. to indicate frame\nE.g., "play toprow" or "play first"\n')
+        }
+        else {
+          for (const i of inputMatch[frameIndex]) {
+            if (videoList[i].paused == true) {
+              videoList[i].play();
+            } else {
+              videoList[i].pause();
+            }
+          };
+        }
+      },
+      pause: function (input) {
+        input = input || "all"
+        for (const x of dictionaryList) {
+          if (x.includes(input)) {
+            var frameIndex = dictionaryList.indexOf(x);
+          }
+        }
+        if (frameIndex == undefined) {
+          this.echo('\nUse the "play" command by indicating the frame you want to play/pause -- \nusing numbers, rows, columns, all, left, right, first, second, etc. to indicate frame\nE.g., "play toprow" or "play first"\n')
+        }
+        else {
+          for (const i of inputMatch[frameIndex]) {
+            if (videoList[i].paused == true) {
+              videoList[i].play();
+            } else {
+              videoList[i].pause();
+            }
+          };
+        }
+      },
+
+// #endregion --------------------------------------------------------------
+// #region                [NEW] Game
+//--------------------------------------------------------------------------     
+
+      reset: function() {
+
+        // ask user if they want to restart the scores or restart the scores and videos or just the videos
+
+        term.reset()
+      },
+      startover: function() {
+        term.reset()
+      },
+      new: function(element) {
+        if ( element == "game") {
+          term.reset()
+        }
+      },
+
+// #endregion --------------------------------------------------------------
+// #region                [START] Game 
+//--------------------------------------------------------------------------     
+      start: function () {
+        //  this.hide(); < how to solve this?
+        //  this.echo("Press the ~ Key")
+        this.clear()
+        this.echo("[[gb;red;]USE THE ~ KEY TO PLAY/PAUSE] \nGood Luck.\n")
+        this.echo("options: type 'mute' or 'more'")
+
+        // ------ LEVEL 1: Player 1 Answer ------ \\
+        this.push(function (player1Answer) {
+          if (player1Answer != undefined) {
+            if (timeCheck(player1Answer, answerKey, 0, 2) == undefined ) {
+              p1Score--;
+              this.echo("\nIncorrect. . .\n-1 Point\n\n[[u;;]Scores]\nPlayer 1: " + p1Score + "\n" + "Player 2: " + p2Score + "\n")
+            } else { 
+              p1Score += 2
+              this.echo("\nCorrect!\n-1 Point\n\n[[u;;]Scores]\nPlayer 1: " + p1Score + "\n" + "Player 2: " + p2Score + "\n");}          };
+
+        // ------ LEVEL 2: Player 2 Answer ------ \\
+          this.push(function (player2Answer) {
+
+
+            if (player2Answer != undefined) {
+                if (timeCheck(player1Answer, answerKey, 0, 2) == undefined ) {
+                  p2Score--;
+                  this.echo("\nIncorrect. . .\n-1 Point\n\n[[u;;]Scores]\nPlayer 1: " + p1Score + "\n" + "Player 2: " + p2Score + "\n")
+              } else { p2Score += 2;
+                this.echo("\nCorrect!\n-1 Point\n\n[[u;;]Scores]\nPlayer 1: " + p1Score + "\n" + "Player 2: " + p2Score + "\n");}
+            };
+
+            this.echo('Use ~ Key to Resume. Type "help" "more" "mute" "pause" etc. for options.')
+            this.pop();
+          }, { prompt: "[[b;#bcb6ff;black]\nPlayer 2's Turn]\nAnswer:",
+
+               // assign term name so that term can be manually set using method 
+               // set_interpreter([interpreter, login]) — overwrite current interpreter.
+               name: "player2Response" }); 
+        }, { prompt: "[[b;#94fbab;black]\nPlayer 1's Turn]\nAnswer:",
+             name: "player1Response" },
+      )
+    },
+   
+
+// #endregion --------------------------------------------------------------
+// #region                next...
+//-------------------------------------------------------------------------- 
+
+    });
+  });
+
+</script>
+
+<!-- Cinema Royale -->
+<script src="js/answerKey.js"></script>
+
+
+<!-- Terminal Files -->
+<link rel="stylesheet" href="https://unpkg.com/jquery.terminal@2.x.x/css/jquery.terminal.min.css" />
+<script src="https://unpkg.com/jquery.terminal@2.20.x"></script>
+
+<script src="js/jquery.mousewheel-min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/jcubic/static/js/wcwidth.js"></script>
+<script src="js/dterm.js?<?= md5(file_get_contents('js/dterm.js')) ?>"></script>
+<script src="https://cdn.jsdelivr.net/npm/js-polyfills/keyboard.js"></script>
+<script src="https://www.gstatic.com/firebasejs/3.3.0/firebase.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/randomcolor/randomColor.js"></script>
+<script src="js/sysend.js?<?= md5(file_get_contents('js/sysend.js')) ?>"></script>
+
+<!-- Terminal Plug Ins -->
+<script src="js/code.js"></script>
+<script src="js/jqbiwa.js"></script>
+<script src="js/less.js"></script>
+<script src="js/pipe.js"></script>
+<script src="js/unix_formatting.js"></script>
+<script src="js/xml_formatting.js"></script>
