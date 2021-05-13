@@ -1,9 +1,40 @@
 <!DOCTYPE html>
-<title> By|Myself </title>
+<title> Cinema Royale </title>
+
+
+<head>
+  <!-- JQuery -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+  <!-- Terminal CSS -->
+  <link rel="stylesheet" href="css/terminal.css">
+
+  <!-- Starry Night SASS Compiled  -->
+  <link rel="stylesheet" href="css//pixel_starry_night.css">
+
+  <!-- Terminal JS -->
+  <script src="js/jquery.terminal.js"></script>
+  <script src="js/jquery.wcwidth.js"></script>
+  <script src="js/keyboard.js"></script>
+  <script src="js/firebase.js"></script>
+  <script src="js/randomColor.js"></script>
+
+  <!-- Answer Key DB -->
+  <script src="js/answerKey.js"></script>
+</head>
 
 
 <style>
-  /* Video Grid */
+  body { 
+    background-color: rgba(0, 0, 0, 1); 
+    overflow: hidden;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+  }
+    
+    
+    /* Video Grid */
   .row_items {
     border-width: 4px;
     margin-top: -4px;
@@ -13,8 +44,8 @@
     box-sizing: border-box;
     width: calc(49.5% + 2px);
     background-clip: border-box;
-    background-image: url("pictures/stars-bg.jpg");
-    background-blend-mode: color;
+
+    background-color: rgba(0, 0, 0, 0.7);
   }
 
   .row {
@@ -31,41 +62,29 @@
   }
 
   .grid {
+    position: absolute;
+    height: auto;
     display: flex;
     flex-direction: column;
     justify-content: space-around;
-    min-height: 130%;
+    min-height: 100%;
   }
 
   /* Quake Terminal */
   .terminal {
-    --size: 1.5;
+
     --link-color: blue;
     --error-color: red;
-    --background: rgba(0, 0, 0, 0.9);
   }
 
 </style>
 
-<head>
-  <!-- Starry Night SASS Compiled  -->
-  <link rel="stylesheet" href="css//pixel_starry_night.css">
-
-  <!-- JQuery -->
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
-
-</head>
 
 <body>
+  <!-- Star BG -->
   <div id="stars"></div>
   <div id="stars2"></div>
   <div id="stars3"></div>
-
-  <!-- Quake Terminal -->
-  <div id="term" class="term" style="display: block;">
-
-
 
   <!-- Video Grid -->
   <div class="grid">
@@ -77,7 +96,6 @@
         <source src="videos\MegaAnime.mp4" type="video/mp4">
       </video>
     </div>
-
     <div class="row">
       <video class="row_items" muted loop style="align-self: flex-start; margin-top: 6px;" id="video_three">
         <source src="videos\megashots2.mp4" type="video/mp4">
@@ -87,16 +105,22 @@
       </video>
     </div>
   </div>
+
+   <!-- Quake Terminal -->
+  <div id="term" class="term">
 </body>
+
 
 <script> 
 // #endregion --------------------------------------------------------------
 // #region                Global Variables
 //-------------------------------------------------------------------------- 
 
-  var p1Score = p2Score = p3Score = p4score = 0
-  
 
+  // Before I learned RegEx . . . . . . .
+
+  
+  var p1Score = p2Score = p3Score = p4score = 0
   // Frame Selection Possible Args
   var play1 = [1, "one", "first", "top left", "top", "left"]
   var play2 = [2, "two", "second", "top right", "top", "right"]
@@ -121,9 +145,6 @@
 // #endregion --------------------------------------------------------------
 // #region                Answer Checker
 //-------------------------------------------------------------------------- 
-
-  var answerKey = { "g": [0, 10], "slumdog millionaire": [0, 10] }
-
   function timeCheck(playerAnswer, keyNumber, index1, index2, index3, index4) {
   index2 = index2 || undefined
   index3 = index3 || undefined
@@ -185,7 +206,6 @@
 // #endregion --------------------------------------------------------------
 // #region                Quake Term
 //--------------------------------------------------------------------------  
-
   (function ($) {
     $.fn.term = function (eval, options) {
       if ($('body').data('term')) {
@@ -204,16 +224,14 @@
         height: 250,
         enabled: true,
         greetings: "When the videos pause, players type the name of the movie on one of the two frames on their side.\nPlayers alternate turns getting to decide when to pause.\nThere are different strategies for choosing your pause times.\n\n+2 for correct answer.\n-1 for wrong answer/no answer\nPause videos with ~ Key\n\nType 'start' to start game",
-        checkArity: false,
+        checkArity: true,
         history: true,
         memory: true,
         keypress: function (e) {
           if (e.which == 96) {
             return false;
           }
-          /* if (e.which == 192 || 32) {
-            settings.prompt.pop();
-          } */
+
         }
       };
       if (options) {
@@ -223,7 +241,7 @@
       var self = this;
       self.terminal = this.find('.td').terminal(eval, settings);
       var focus = false;
-
+      
       // Quake Functionality 
       $(document.documentElement).keypress(function (e) {
         if (e.which == 96) {
@@ -237,10 +255,6 @@
       });
       $('body').data('term', this);
       return self;
-      // Activate to hide on load:
-      // this.hide();
-      
-      
     };
   }) (jQuery);
   
@@ -466,26 +480,3 @@
 
 </script>
 
-<!-- Cinema Royale -->
-<script src="js/answerKey.js"></script>
-
-
-<!-- Terminal Files -->
-<link rel="stylesheet" href="https://unpkg.com/jquery.terminal@2.x.x/css/jquery.terminal.min.css" />
-<script src="https://unpkg.com/jquery.terminal@2.20.x"></script>
-
-<script src="js/jquery.mousewheel-min.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/jcubic/static/js/wcwidth.js"></script>
-<script src="js/dterm.js?<?= md5(file_get_contents('js/dterm.js')) ?>"></script>
-<script src="https://cdn.jsdelivr.net/npm/js-polyfills/keyboard.js"></script>
-<script src="https://www.gstatic.com/firebasejs/3.3.0/firebase.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/randomcolor/randomColor.js"></script>
-<script src="js/sysend.js?<?= md5(file_get_contents('js/sysend.js')) ?>"></script>
-
-<!-- Terminal Plug Ins -->
-<script src="js/code.js"></script>
-<script src="js/jqbiwa.js"></script>
-<script src="js/less.js"></script>
-<script src="js/pipe.js"></script>
-<script src="js/unix_formatting.js"></script>
-<script src="js/xml_formatting.js"></script>
