@@ -4,4 +4,4 @@
 
 Movie recognition game.
 
-### [Link to Live Version](https://bymyself.life/cinemaroyale)
+### [Link to Live Version](https://bymyself.life/cinema-royale)
