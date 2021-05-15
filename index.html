@@ -15,12 +15,22 @@
   <!-- Terminal JS -->
   <script src="js/jquery.terminal.js"></script>
   <script src="js/jquery.wcwidth.js"></script>
-  <script src="js/keyboard.js"></script>
-  <script src="js/firebase.js"></script>
-  <script src="js/randomColor.js"></script>
+  <script src="js/jcubic-terminal/echo_newline.js"></script>
 
   <!-- Answer Key DB -->
   <script src="js/answerKey.js"></script>
+
+  <!-- Polyfills Keyboard-->
+  <script src="js/keyboard.js"></script>
+
+  <!-- Firebase -->
+  <script src="js/firebase.js"></script>
+
+  <!-- Random Color -->
+  <script src="js/randomColor.js"></script>
+
+  <!-- Favico -->
+  <link rel="icon" href="icons/cascading-vapor-windows.png" type="image/x-icon"/>
 </head>
 
 
@@ -70,6 +80,27 @@
     min-height: 100%;
   }
 
+  /* 6x6 Variation */
+  .row_middle {
+    display: inline-flex;
+    max-height: 50%;
+    max-width: 100%;
+    justify-content: center;
+  }
+
+  .row_items_wide {
+    max-width: 54%;
+    -ms-flex-item-align: center;
+    display: flex;
+  }
+
+  /* Single Vid Variation */
+  .singleVidStyle {
+    border: 0px;
+    height: 100%;
+    width: 100%;
+  }
+
   /* Quake Terminal */
   .terminal {
 
@@ -112,6 +143,100 @@
 
 
 <script> 
+
+
+function singleVid() {
+  // Remove Current Rows and Videos
+  for ( const vid of videoList ) { vid.remove() };
+  document.getElementsByClassName("row")[0].remove()
+  document.getElementsByClassName("row")[0].remove()
+  
+  // Create Single Vid Node
+  let vidNode1 = document.createElement("video")
+  vidNode1.autoplay = true;
+  vidNode1.loop = true;
+  vidNode1.muted = true;
+  vidNode1.classList.add("singleVidStyle");
+  vidNode1.src = "videos/megashots.mp4#t=2";
+  vidNode1.style.height = "100%";
+
+  // Update Body
+  document.body.style.border = "0px"
+  document.getElementsByClassName("grid")[0].appendChild(vidNode1)
+
+  vidNode1.pause();
+
+  // Update videoList Array
+  videoList = [vidNode1]
+}
+
+function sixBySix() {
+  // Add Middle Row if not already added
+  if ( videoList.length == 4 ) { addMiddleRow() }
+
+  // Change width of row items
+  rowItems = document.getElementsByClassName("row_items");
+  for ( const i of rowItems ) { i.style.maxWidth = "33.333333%" };
+
+  // Change height of rows
+  rowNodes = document.getElementsByClassName("row");
+  for ( const i of rowNodes ) { i.style.maxHeight = "23%" };
+
+  // Create Middle Video Columns
+  let vidNode1 = document.createElement("video")
+  vidNode1.autoplay = true;
+  vidNode1.loop = true;
+  vidNode1.muted = true;
+  vidNode1.classList.add("row_items");
+  vidNode1.src = "videos/MegaAnime.mp4#t=900"  
+
+  let vidNode2 = document.createElement("video")
+  vidNode2.autoplay = true;
+  vidNode2.loop = true;
+  vidNode2.muted = true;
+  vidNode2.classList.add("row_items");
+  vidNode2.src = "videos/megashots2.mp4#t=900";
+
+  // Append to Row
+  secondRow = document.getElementsByClassName("row")[1]
+  secondRow.appendChild(vidNode2)
+  firstRow = document.getElementsByClassName("row")[0]
+  firstRow.appendChild(vidNode1)
+
+  // Add Vid Nodes to videoList array for Hotkey Control Functions
+  vidNode1.pause(); vidNode2.pause()
+  videoList.push(vidNode1); videoList.push(vidNode2)
+}
+
+
+function addMiddleRow() {
+  // Video
+  var vidNode = document.createElement("video")
+  vidNode.autoplay = true;
+  vidNode.loop = true;
+  vidNode.muted = true;
+  vidNode.classList.add("row_items_wide");
+  vidNode.src = "videos/megashots.mp4#t=600"
+  // Assign ID of "video_five"
+  vidNode.setAttribute("id", "video_five")
+
+  // Row
+  var midNode = document.createElement("div")
+  midNode.classList.add("row_middle")
+  midNode.appendChild(vidNode)
+
+  // Insert
+  gridNode = document.getElementsByClassName("grid")[0]
+  secondRow = document.getElementsByClassName("row")[1]
+  gridNode.insertBefore(midNode, secondRow)
+
+  // Pause
+  vidNode.pause()
+
+  // Append Vid Node to videoList array for Hotkey Control Functions
+  videoList.push(vidNode)
+}
+
 // #endregion --------------------------------------------------------------
 // #region                Global Variables
 //-------------------------------------------------------------------------- 
@@ -223,8 +348,8 @@
         name: 'term',
         height: 250,
         enabled: true,
-        greetings: "When the videos pause, players type the name of the movie on one of the two frames on their side.\nPlayers alternate turns getting to decide when to pause.\nThere are different strategies for choosing your pause times.\n\n+2 for correct answer.\n-1 for wrong answer/no answer\nPause videos with ~ Key\n\nType 'start' to start game",
-        checkArity: true,
+        greetings: "When the videos pause, players type the name of any one movie projected on their side/section.\nPlayers alternate turns deciding when to pause.\n+2 for correct answer\n-1 for wrong answer/no answer\n\nPause videos with [[gb;lightgreen;]~] Key\nType [[gb;lightgreen;]start] to start game\n[[b;pink;]anime mode] for anime version\n[[b;pink;]three] for a third row of videos\n[[b;pink;]six] for three videos per row\n[[b;pink;]one] for single video\n",
+        checkArity: false,
         history: true,
         memory: true,
         keypress: function (e) {
@@ -323,6 +448,41 @@
           window.location = "1x1_Random_Video.html";
         }
       },
+
+// #endregion --------------------------------------------------------------
+// #region                [ANIME] Mode
+//--------------------------------------------------------------------------
+
+      anime: function (input) {
+              input = input || "mode"
+              document.getElementById("video_one").src = "videos/MegaAnime.mp4#t=675"
+              document.getElementById("video_two").src = "videos/MegaAnime.mp4#t=1366"
+              document.getElementById("video_three").src = "videos/MegaAnime.mp4#t=2025"
+              document.getElementById("video_four").src = "videos/MegaAnime.mp4"
+            },
+
+
+// #endregion --------------------------------------------------------------
+// #region                
+//--------------------------------------------------------------------------
+
+  // [THREE] rows mode (6x6 legacy)
+  three: function (input) {
+                input = input || "mode"
+                addMiddleRow()
+              },
+
+  // [SIX] three videos per row
+  six: function (input) {
+                input = input || "mode"
+                sixBySix()
+              },
+
+  // [ONE] single video player
+  one: function (input) {
+                input = input || "mode"
+                singleVid()
+              },
 
 // #endregion --------------------------------------------------------------
 // #region                [MUTE] [VOLUME] 
@@ -433,7 +593,7 @@
         //  this.hide(); < how to solve this?
         //  this.echo("Press the ~ Key")
         this.clear()
-        this.echo("[[gb;red;]USE THE ~ KEY TO PLAY/PAUSE] \nGood Luck.\n")
+        this.echo("[[gb;red;]USE THE ~ KEY TO PLAY/PAUSE]\nGood Luck.\n")
         this.echo("options: type 'mute' or 'more'")
 
         // ------ LEVEL 1: Player 1 Answer ------ \\
