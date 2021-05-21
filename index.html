@@ -1,38 +1,35 @@
 <!DOCTYPE html>
-<title> Cinema Royale </title>
-
-
+<title> cinema royale </title>
 <head>
   <!-- JQuery -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
   <!-- Terminal CSS -->
-  <link rel="stylesheet" href="css/terminal.css">
+  <link rel="stylesheet" href="/css/terminal.css">
 
   <!-- Starry Night SASS Compiled  -->
-  <link rel="stylesheet" href="css//pixel_starry_night.css">
+  <link rel="stylesheet" href="/css//pixel_starry_night.css">
 
   <!-- Terminal JS -->
-  <script src="js/jquery.terminal.js"></script>
-  <script src="js/jquery.wcwidth.js"></script>
-  <script src="js/jcubic-terminal/echo_newline.js"></script>
+  <script src="/js/jquery.terminal.js"></script>
+  <script src="/js/wcwidth.js"></script>
+  <script src="/js/echo_newline.js"></script>
 
   <!-- Answer Key DB -->
-  <script src="js/answerKey.js"></script>
+  <script src="/js/answerKey.js"></script>
 
   <!-- Polyfills Keyboard-->
-  <script src="js/keyboard.js"></script>
+  <script src="/js/keyboard.js"></script>
 
   <!-- Firebase -->
-  <script src="js/firebase.js"></script>
+  <script src="/js/firebase.js"></script>
 
   <!-- Random Color -->
-  <script src="js/randomColor.js"></script>
+  <script src="/js/randomColor.js"></script>
 
   <!-- Favico -->
-  <link rel="icon" href="icons/cascading-vapor-windows.png" type="image/x-icon"/>
+  <link rel="icon" href="/icons/cascading-vapor-windows.png" type="image/x-icon"/>
 </head>
-
 
 <style>
   body { 
@@ -43,8 +40,7 @@
     width: 100%;
   }
     
-    
-    /* Video Grid */
+  /* Video Grid */
   .row_items {
     border-width: 4px;
     margin-top: -4px;
@@ -107,9 +103,7 @@
     --link-color: blue;
     --error-color: red;
   }
-
 </style>
-
 
 <body>
   <!-- Star BG -->
@@ -141,502 +135,499 @@
   <div id="term" class="term">
 </body>
 
-
 <script> 
+  function singleVid() {
+    // Remove Current Rows and Videos
+    for ( const vid of videoList ) { vid.remove() };
+    document.getElementsByClassName("row")[0].remove()
+    document.getElementsByClassName("row")[0].remove()
+    
+    // Create Single Vid Node
+    let vidNode1 = document.createElement("video")
+    vidNode1.autoplay = true;
+    vidNode1.loop = true;
+    vidNode1.muted = true;
+    vidNode1.classList.add("singleVidStyle");
+    vidNode1.src = "videos/megashots.mp4#t=2";
+    vidNode1.style.height = "100%";
+
+    // Update Body
+    document.body.style.border = "0px"
+    document.getElementsByClassName("grid")[0].appendChild(vidNode1)
+
+    vidNode1.pause();
+
+    // Update videoList Array
+    videoList = [vidNode1]
+  }
+
+  function sixBySix() {
+    // Add Middle Row if not already added
+    if ( videoList.length == 4 ) { addMiddleRow() }
+
+    // Change width of row items
+    rowItems = document.getElementsByClassName("row_items");
+    for ( const i of rowItems ) { i.style.maxWidth = "33.333333%" };
+
+    // Change height of rows
+    rowNodes = document.getElementsByClassName("row");
+    for ( const i of rowNodes ) { i.style.maxHeight = "23%" };
+
+    // Create Middle Video Columns
+    let vidNode1 = document.createElement("video")
+    vidNode1.autoplay = true;
+    vidNode1.loop = true;
+    vidNode1.muted = true;
+    vidNode1.classList.add("row_items");
+    vidNode1.src = "videos/MegaAnime.mp4#t=900"  
+
+    let vidNode2 = document.createElement("video")
+    vidNode2.autoplay = true;
+    vidNode2.loop = true;
+    vidNode2.muted = true;
+    vidNode2.classList.add("row_items");
+    vidNode2.src = "videos/megashots2.mp4#t=900";
+
+    // Append to Row
+    secondRow = document.getElementsByClassName("row")[1]
+    secondRow.appendChild(vidNode2)
+    firstRow = document.getElementsByClassName("row")[0]
+    firstRow.appendChild(vidNode1)
+
+    // Add Vid Nodes to videoList array for Hotkey Control Functions
+    vidNode1.pause(); vidNode2.pause()
+    videoList.push(vidNode1); videoList.push(vidNode2)
+  }
 
 
-function singleVid() {
-  // Remove Current Rows and Videos
-  for ( const vid of videoList ) { vid.remove() };
-  document.getElementsByClassName("row")[0].remove()
-  document.getElementsByClassName("row")[0].remove()
-  
-  // Create Single Vid Node
-  let vidNode1 = document.createElement("video")
-  vidNode1.autoplay = true;
-  vidNode1.loop = true;
-  vidNode1.muted = true;
-  vidNode1.classList.add("singleVidStyle");
-  vidNode1.src = "videos/megashots.mp4#t=2";
-  vidNode1.style.height = "100%";
+  function addMiddleRow() {
+    // Video
+    var vidNode = document.createElement("video")
+    vidNode.autoplay = true;
+    vidNode.loop = true;
+    vidNode.muted = true;
+    vidNode.classList.add("row_items_wide");
+    vidNode.src = "videos/megashots.mp4#t=600"
+    // Assign ID of "video_five"
+    vidNode.setAttribute("id", "video_five")
 
-  // Update Body
-  document.body.style.border = "0px"
-  document.getElementsByClassName("grid")[0].appendChild(vidNode1)
+    // Row
+    var midNode = document.createElement("div")
+    midNode.classList.add("row_middle")
+    midNode.appendChild(vidNode)
 
-  vidNode1.pause();
+    // Insert
+    gridNode = document.getElementsByClassName("grid")[0]
+    secondRow = document.getElementsByClassName("row")[1]
+    gridNode.insertBefore(midNode, secondRow)
 
-  // Update videoList Array
-  videoList = [vidNode1]
-}
+    // Pause
+    vidNode.pause()
 
-function sixBySix() {
-  // Add Middle Row if not already added
-  if ( videoList.length == 4 ) { addMiddleRow() }
+    // Append Vid Node to videoList array for Hotkey Control Functions
+    videoList.push(vidNode)
+  }
 
-  // Change width of row items
-  rowItems = document.getElementsByClassName("row_items");
-  for ( const i of rowItems ) { i.style.maxWidth = "33.333333%" };
-
-  // Change height of rows
-  rowNodes = document.getElementsByClassName("row");
-  for ( const i of rowNodes ) { i.style.maxHeight = "23%" };
-
-  // Create Middle Video Columns
-  let vidNode1 = document.createElement("video")
-  vidNode1.autoplay = true;
-  vidNode1.loop = true;
-  vidNode1.muted = true;
-  vidNode1.classList.add("row_items");
-  vidNode1.src = "videos/MegaAnime.mp4#t=900"  
-
-  let vidNode2 = document.createElement("video")
-  vidNode2.autoplay = true;
-  vidNode2.loop = true;
-  vidNode2.muted = true;
-  vidNode2.classList.add("row_items");
-  vidNode2.src = "videos/megashots2.mp4#t=900";
-
-  // Append to Row
-  secondRow = document.getElementsByClassName("row")[1]
-  secondRow.appendChild(vidNode2)
-  firstRow = document.getElementsByClassName("row")[0]
-  firstRow.appendChild(vidNode1)
-
-  // Add Vid Nodes to videoList array for Hotkey Control Functions
-  vidNode1.pause(); vidNode2.pause()
-  videoList.push(vidNode1); videoList.push(vidNode2)
-}
+  // #endregion --------------------------------------------------------------
+  // #region                Global Variables
+  //-------------------------------------------------------------------------- 
 
 
-function addMiddleRow() {
-  // Video
-  var vidNode = document.createElement("video")
-  vidNode.autoplay = true;
-  vidNode.loop = true;
-  vidNode.muted = true;
-  vidNode.classList.add("row_items_wide");
-  vidNode.src = "videos/megashots.mp4#t=600"
-  // Assign ID of "video_five"
-  vidNode.setAttribute("id", "video_five")
+    // Before I learned RegEx . . . . . . .
 
-  // Row
-  var midNode = document.createElement("div")
-  midNode.classList.add("row_middle")
-  midNode.appendChild(vidNode)
+    
+    var p1Score = p2Score = p3Score = p4score = 0
+    // Frame Selection Possible Args
+    var play1 = [1, "one", "first", "top left", "top", "left"]
+    var play2 = [2, "two", "second", "top right", "top", "right"]
+    var play3 = [3, "three", "third", "bottom left", "bottom", "left"]
+    var play4 = [4, "four", "fourth", "bottom right", "bottom", "right"]
+    var playtop = ["1row", "row1", "onerow", "firstrow", "top", "toprow"]
+    var playbot = ["2row", "tworow", "secondrow", "bottom", "bot"]
+    var playright = ["right", "rightcolumn", "column2", "columntwo"]
+    var playleft = ["left", "left2", "leftcolumn", "column1", "columnone"]
+    var playall = [4, "allfour", "every", "everyone", "total", "all", "both", "complete"]
+    dictionaryList = [play1, play2, play3, play4, playtop, playbot, playright, playleft, playall] 
+    var mute1 = [1, "one", "first", "top left", "top", "all", "left", "left column", "top row", "everything", "al"]
+    var mute2 = [2, "two", "second", "top right", "top", "all", "right", "right column", "top row", "everything", "al"]
+    var mute3 = [3, "three", "third", "bottom left", "bottom", "all", "left", "left column", "bottomrow", "everything", "al"]
+    var mute4 = [4, "four", "fourth", "bottom right", "bottom", "all", "right", "right column", "bottomrow", "everything", "al"]
+    muteDictionary_list = [mute1, mute2, mute3, mute4]
+    var inputMatch = [[0], [1], [2], [3], [0, 1], [2, 3], [1, 3], [0, 2], [0, 1, 2, 3]]
+    
+    // Frame Sources
+    videoList = [document.getElementById("video_one"), document.getElementById("video_two"), document.getElementById("video_three"), document.getElementById("video_four")]
 
-  // Insert
-  gridNode = document.getElementsByClassName("grid")[0]
-  secondRow = document.getElementsByClassName("row")[1]
-  gridNode.insertBefore(midNode, secondRow)
+  // #endregion --------------------------------------------------------------
+  // #region                Answer Checker
+  //-------------------------------------------------------------------------- 
+    function timeCheck(playerAnswer, keyNumber, index1, index2, index3, index4) {
+    index2 = index2 || undefined
+    index3 = index3 || undefined
+    index4 = index4 || undefined
+    currentVid_time = [ videoList[0].currentTime, videoList[1].currentTime, videoList[2].currentTime, videoList[3].currentTime, ]
 
-  // Pause
-  vidNode.pause()
+    for (const property in answerKey) {
 
-  // Append Vid Node to videoList array for Hotkey Control Functions
-  videoList.push(vidNode)
-}
+      // if answer matches a property from answer key object
+      if (property.includes(playerAnswer)) {
 
-// #endregion --------------------------------------------------------------
-// #region                Global Variables
-//-------------------------------------------------------------------------- 
-
-
-  // Before I learned RegEx . . . . . . .
-
-  
-  var p1Score = p2Score = p3Score = p4score = 0
-  // Frame Selection Possible Args
-  var play1 = [1, "one", "first", "top left", "top", "left"]
-  var play2 = [2, "two", "second", "top right", "top", "right"]
-  var play3 = [3, "three", "third", "bottom left", "bottom", "left"]
-  var play4 = [4, "four", "fourth", "bottom right", "bottom", "right"]
-  var playtop = ["1row", "row1", "onerow", "firstrow", "top", "toprow"]
-  var playbot = ["2row", "tworow", "secondrow", "bottom", "bot"]
-  var playright = ["right", "rightcolumn", "column2", "columntwo"]
-  var playleft = ["left", "left2", "leftcolumn", "column1", "columnone"]
-  var playall = [4, "allfour", "every", "everyone", "total", "all", "both", "complete"]
-  dictionaryList = [play1, play2, play3, play4, playtop, playbot, playright, playleft, playall] 
-  var mute1 = [1, "one", "first", "top left", "top", "all", "left", "left column", "top row", "everything", "al"]
-  var mute2 = [2, "two", "second", "top right", "top", "all", "right", "right column", "top row", "everything", "al"]
-  var mute3 = [3, "three", "third", "bottom left", "bottom", "all", "left", "left column", "bottomrow", "everything", "al"]
-  var mute4 = [4, "four", "fourth", "bottom right", "bottom", "all", "right", "right column", "bottomrow", "everything", "al"]
-  muteDictionary_list = [mute1, mute2, mute3, mute4]
-  var inputMatch = [[0], [1], [2], [3], [0, 1], [2, 3], [1, 3], [0, 2], [0, 1, 2, 3]]
-  
-  // Frame Sources
-  videoList = [document.getElementById("video_one"), document.getElementById("video_two"), document.getElementById("video_three"), document.getElementById("video_four")]
-
-// #endregion --------------------------------------------------------------
-// #region                Answer Checker
-//-------------------------------------------------------------------------- 
-  function timeCheck(playerAnswer, keyNumber, index1, index2, index3, index4) {
-  index2 = index2 || undefined
-  index3 = index3 || undefined
-  index4 = index4 || undefined
-  currentVid_time = [ videoList[0].currentTime, videoList[1].currentTime, videoList[2].currentTime, videoList[3].currentTime, ]
-
-  for (const property in answerKey) {
-
-    // if answer matches a property from answer key object
-    if (property.includes(playerAnswer)) {
-
-      // VIDEO 1: check if any index key hits match with current time
-      if (currentVid_time[index1] >= keyNumber[property[0]] && currentVid_time[index1] <= keyNumber[property[1]]) {
-        return "correct"
-      }
-
-      // --VIDEO 2-- (optional)   
-      if (index3 != undefined) {
-        if (currentVid_time[index2] >= keyNumber[property[0]] && currentVid_time[index2] <= keyNumber[property[1]]) {
+        // VIDEO 1: check if any index key hits match with current time
+        if (currentVid_time[index1] >= keyNumber[property[0]] && currentVid_time[index1] <= keyNumber[property[1]]) {
           return "correct"
         }
-      }
 
-      // --VIDEO 3-- (optional)
-      if (index3 != undefined) {
-        if (currentVid_time[index3] >= keyNumber[property[0]] && currentVid_time[index3] <= keyNumber[property[1]]) {
-          return "correct"
-        }        
-      }
-
-      // --VIDEO 4-- (optional)
-      if (index3 != undefined) {
-        if (currentVid_time[index4] >= keyNumber[property[0]] && currentVid_time[index4] <= keyNumber[property[1]]) {
-          return "correct"
-        }        
-      }
-
-    }
-  }
-}
-
-// #endregion --------------------------------------------------------------
-// #region                Input Correction
-//-------------------------------------------------------------------------- 
-  String.prototype.strip = function (char) {
-    return this.replace(new RegExp("^" + char + "*"), '').
-      replace(new RegExp(char + "*$"), '');
-  }
-
-  $.extend_if_has = function (desc, source, array) {
-    for (var i = array.length; i--;) {
-      if (typeof source[array[i]] != 'undefined') {
-        desc[array[i]] = source[array[i]];
-      }
-    }
-    return desc;
-  };
-
-// #endregion --------------------------------------------------------------
-// #region                Quake Term
-//--------------------------------------------------------------------------  
-  (function ($) {
-    $.fn.term = function (eval, options) {
-      if ($('body').data('term')) {
-        return $('body').data('term').terminal;
-      }
-      this.addClass('term');
-      options = options || {};
-      eval = eval || function (command, term) {
-        term.echo("you don't set eval for term");
-      };
-      var settings = {
-
-        // SETTINGS Property of Terminal  \\           
-        prompt: '>>',
-        name: 'term',
-        height: 250,
-        enabled: true,
-        greetings: "When the videos pause, players type the name of any one movie projected on their side/section.\nPlayers alternate turns deciding when to pause.\n+2 for correct answer\n-1 for wrong answer/no answer\n\nPause videos with [[gb;lightgreen;]~] Key\nType [[gb;lightgreen;]start] to start game\n[[b;pink;]anime mode] for anime version\n[[b;pink;]three] for a third row of videos\n[[b;pink;]six] for three videos per row\n[[b;pink;]one] for single video\n",
-        checkArity: false,
-        history: true,
-        memory: true,
-        keypress: function (e) {
-          if (e.which == 96) {
-            return false;
+        // --VIDEO 2-- (optional)   
+        if (index3 != undefined) {
+          if (currentVid_time[index2] >= keyNumber[property[0]] && currentVid_time[index2] <= keyNumber[property[1]]) {
+            return "correct"
           }
-
         }
-      };
-      if (options) {
-        $.extend(settings, options);
+
+        // --VIDEO 3-- (optional)
+        if (index3 != undefined) {
+          if (currentVid_time[index3] >= keyNumber[property[0]] && currentVid_time[index3] <= keyNumber[property[1]]) {
+            return "correct"
+          }        
+        }
+
+        // --VIDEO 4-- (optional)
+        if (index3 != undefined) {
+          if (currentVid_time[index4] >= keyNumber[property[0]] && currentVid_time[index4] <= keyNumber[property[1]]) {
+            return "correct"
+          }        
+        }
+
       }
-      this.append('<div class="td"></div>');
-      var self = this;
-      self.terminal = this.find('.td').terminal(eval, settings);
-      var focus = false;
-      
-      // Quake Functionality 
-      $(document.documentElement).keypress(function (e) {
-        if (e.which == 96) {
-          self.slideToggle('fast');
-          self.terminal.focus(focus = !focus);
-          self.terminal.attr({
-            scrollTop: self.terminal.attr("scrollHeight")
-          });
-          
+    }
+  }
+
+  // #endregion --------------------------------------------------------------
+  // #region                Input Correction
+  //-------------------------------------------------------------------------- 
+    String.prototype.strip = function (char) {
+      return this.replace(new RegExp("^" + char + "*"), '').
+        replace(new RegExp(char + "*$"), '');
+    }
+
+    $.extend_if_has = function (desc, source, array) {
+      for (var i = array.length; i--;) {
+        if (typeof source[array[i]] != 'undefined') {
+          desc[array[i]] = source[array[i]];
         }
-      });
-      $('body').data('term', this);
-      return self;
+      }
+      return desc;
     };
-  }) (jQuery);
-  
 
-// #endregion --------------------------------------------------------------
-// #region                Global Control Hotkeys 
-//--------------------------------------------------------------------------  
-     
-      // Binding Tilde ~ Key to play/pause all videos
-      // Tilde keycode = 192
-      // Add other hotkeys?
-        $(document).keydown(function (e) {
-          if (e.which == 192) {
-            for (const i of videoList) {
-              if (i.paused == true) {
-                i.play();
-              } else {
-                i.pause();
-              }
-            };
-          };
+  // #endregion --------------------------------------------------------------
+  // #region                Quake Term
+  //--------------------------------------------------------------------------  
+    (function ($) {
+      $.fn.term = function (eval, options) {
+        if ($('body').data('term')) {
+          return $('body').data('term').terminal;
+        }
+        this.addClass('term');
+        options = options || {};
+        eval = eval || function (command, term) {
+          term.echo("you don't set eval for term");
+        };
+        var settings = {
 
-          // Spacebar pauses/plays when term is hidden
-          if (e.which == 32 ) {
-            if (jQuery("#term").css('display') == 'none') {
+          // SETTINGS Property of Terminal  \\           
+          prompt: '>>',
+          name: 'term',
+          height: 250,
+          enabled: true,
+          greetings: "When the videos pause, players type the name of any one movie projected on their side/section.\nPlayers alternate turns deciding when to pause.\n+2 for correct answer\n-1 for wrong answer/no answer\n\nPause videos with [[gb;lightgreen;]~] Key\nType [[gb;lightgreen;]start] to start game\n[[b;pink;]anime mode] for anime version\n[[b;pink;]three] for a third row of videos\n[[b;pink;]six] for three videos per row\n[[b;pink;]one] for single video\n",
+          checkArity: false,
+          history: true,
+          memory: true,
+          keypress: function (e) {
+            if (e.which == 96) {
+              return false;
+            }
+
+          }
+        };
+        if (options) {
+          $.extend(settings, options);
+        }
+        this.append('<div class="td"></div>');
+        var self = this;
+        self.terminal = this.find('.td').terminal(eval, settings);
+        var focus = false;
+        
+        // Quake Functionality 
+        $(document.documentElement).keypress(function (e) {
+          if (e.which == 96) {
+            self.slideToggle('fast');
+            self.terminal.focus(focus = !focus);
+            self.terminal.attr({
+              scrollTop: self.terminal.attr("scrollHeight")
+            });
+            
+          }
+        });
+        $('body').data('term', this);
+        return self;
+      };
+    }) (jQuery);
+    
+
+  // #endregion --------------------------------------------------------------
+  // #region                Global Control Hotkeys 
+  //--------------------------------------------------------------------------  
+      
+        // Binding Tilde ~ Key to play/pause all videos
+        // Tilde keycode = 192
+        // Add other hotkeys?
+          $(document).keydown(function (e) {
+            if (e.which == 192) {
               for (const i of videoList) {
                 if (i.paused == true) {
-                i.play();
+                  i.play();
                 } else {
-                i.pause();
+                  i.pause();
+                }
+              };
+            };
+
+            // Spacebar pauses/plays when term is hidden
+            if (e.which == 32 ) {
+              if (jQuery("#term").css('display') == 'none') {
+                for (const i of videoList) {
+                  if (i.paused == true) {
+                  i.play();
+                  } else {
+                  i.pause();
+                }
+              };
+            };
+          }
+          });
+
+    $(function () {
+      $('#term').term({
+
+  // #endregion --------------------------------------------------------------
+  // #region                [WATCH] Navigate to Other Videos 
+  //--------------------------------------------------------------------------  
+        watch: function (video) {
+          var mega4x4 = ["4x4megashots", "4x4", "4x4loopgrid", "4x4grid", "loopgrid", "megagrid", "megashotsgrid", "mega4x4", "4by4", "loopgrid4x4"]
+          var anime4x4 = ["4x4anime", "anime4x4", "animeloopgrid", "animegrid", "loopgridanime", "animemegagrid", "megashotsgridanime", "megaanime4x4", "anime4by4", "animeloopgrid4x4"]
+          var megashots = ["megashots", "singleframemega", "megasingle", "megaloopsing", "greatestshots", "megashotsplayer", "megashotsfullscreen", "moviemontage", "greatestshots", "holymindloop"]
+          var mega6x6 = ["bigmegashots", "6x6", "6x6player", "oversizedplayer", "megaloopgrid6", "loopgrid6x6", "6by6", "6framesshots", "6x6shots", "6shots"]
+          var mega_with_anime = ["megawithanime", "4x4withanime", "4x4loopwithanime", "normal4x4plusanime", "includinganime", "loopgride1anime", "loopgridoneanime", "originalmegagrid", "gridplusanime", "loopgridwithanime"]
+          var random_video = ["randomvideo", "randomloop", "1x1random", "playlistplayer", "shufflevideos", "randomvideos", "playlistrandom", "shotsrandom", "shuffleshots", "randomplaylistplayer"]
+          if (mega4x4.includes(video) == true) {
+            window.location = "4x4_LoopGrid.html";
+          }
+          else if (anime4x4.includes(video) == true) {
+            window.location = "4x4_Anime.html";
+          }
+          else if (megashots.includes(video) == true) {
+            window.location = "1x1_MegaShots.html";
+          }
+          else if (mega6x6.includes(video) == true) {
+            window.location = "6x6_LoopGrid.html";
+          }
+          else if (mega_with_anime.includes(video) == true) {
+            window.location = "4x4_with_anime.html";
+          }
+          else if (random_video.includes(video) == true) {
+            window.location = "1x1_Random_Video.html";
+          }
+        },
+
+  // #endregion --------------------------------------------------------------
+  // #region                [ANIME] Mode
+  //--------------------------------------------------------------------------
+
+        anime: function (input) {
+                input = input || "mode"
+                document.getElementById("video_one").src = "videos/MegaAnime.mp4#t=675"
+                document.getElementById("video_two").src = "videos/MegaAnime.mp4#t=1366"
+                document.getElementById("video_three").src = "videos/MegaAnime.mp4#t=2025"
+                document.getElementById("video_four").src = "videos/MegaAnime.mp4"
+              },
+
+
+  // #endregion --------------------------------------------------------------
+  // #region                
+  //--------------------------------------------------------------------------
+
+    // [THREE] rows mode (6x6 legacy)
+    three: function (input) {
+                  input = input || "mode"
+                  addMiddleRow()
+                },
+
+    // [SIX] three videos per row
+    six: function (input) {
+                  input = input || "mode"
+                  sixBySix()
+                },
+
+    // [ONE] single video player
+    one: function (input) {
+                  input = input || "mode"
+                  singleVid()
+                },
+
+  // #endregion --------------------------------------------------------------
+  // #region                [MUTE] [VOLUME] 
+  //--------------------------------------------------------------------------
+        mute: function (input) {
+          input = input || "fourth"
+          for (const x of muteDictionary_list) {
+            if (x.includes(input)) {
+              var frameIndex = muteDictionary_list.indexOf(x);
+            }
+          }
+          if (frameIndex == undefined) {
+            this.echo('\nUse the "mute" command by indicating the frame you want to play/pause -- \nusing numbers, rows, columns, all, left, right, first, second, etc. to indicate frame\nE.g., "mute top" or "mute third"\n')
+          }
+          else {
+            if (videoList[frameIndex].volume == 0 ) {
+              videoList[frameIndex].volume = 1.0;
+            } else {
+              videoList[frameIndex].volume = 0;
+            };
+          }
+        },
+        volume: function (input) {
+          input = input || "fourth"
+          for (const x of muteDictionary_list) {
+            if (x.includes(input)) {
+              var frameIndex = muteDictionary_list.indexOf(x);
+            }
+          }
+          if (frameIndex == undefined) {
+            this.echo('\nUse the "mute" command by indicating the frame you want to play/pause -- \nusing numbers, rows, columns, all, left, right, first, second, etc. to indicate frame\nE.g., "mute top" or "mute third"\n')
+          }
+          else {
+            if (videoList[frameIndex].volume == 0) {
+              videoList[frameIndex].volume = 1.0;
+            } else {
+              videoList[frameIndex].volume = 0;
+            };
+          }
+        },
+  // #endregion --------------------------------------------------------------
+  // #region                [PLAY] [PAUSE]
+  //--------------------------------------------------------------------------
+        play: function (input) {
+          input = input || "all"
+          for (const x of dictionaryList) {
+            if (x.includes(input)) {
+              var frameIndex = dictionaryList.indexOf(x);
+            }
+          }
+          if (frameIndex == undefined) {
+            this.echo('\nUse the "play" command by indicating the frame you want to play/pause -- \nusing numbers, rows, columns, all, left, right, first, second, etc. to indicate frame\nE.g., "play toprow" or "play first"\n')
+          }
+          else {
+            for (const i of inputMatch[frameIndex]) {
+              if (videoList[i].paused == true) {
+                videoList[i].play();
+              } else {
+                videoList[i].pause();
               }
             };
-          };
-        }
-        });
-
-  $(function () {
-    $('#term').term({
-
-// #endregion --------------------------------------------------------------
-// #region                [WATCH] Navigate to Other Videos 
-//--------------------------------------------------------------------------  
-      watch: function (video) {
-        var mega4x4 = ["4x4megashots", "4x4", "4x4loopgrid", "4x4grid", "loopgrid", "megagrid", "megashotsgrid", "mega4x4", "4by4", "loopgrid4x4"]
-        var anime4x4 = ["4x4anime", "anime4x4", "animeloopgrid", "animegrid", "loopgridanime", "animemegagrid", "megashotsgridanime", "megaanime4x4", "anime4by4", "animeloopgrid4x4"]
-        var megashots = ["megashots", "singleframemega", "megasingle", "megaloopsing", "greatestshots", "megashotsplayer", "megashotsfullscreen", "moviemontage", "greatestshots", "holymindloop"]
-        var mega6x6 = ["bigmegashots", "6x6", "6x6player", "oversizedplayer", "megaloopgrid6", "loopgrid6x6", "6by6", "6framesshots", "6x6shots", "6shots"]
-        var mega_with_anime = ["megawithanime", "4x4withanime", "4x4loopwithanime", "normal4x4plusanime", "includinganime", "loopgride1anime", "loopgridoneanime", "originalmegagrid", "gridplusanime", "loopgridwithanime"]
-        var random_video = ["randomvideo", "randomloop", "1x1random", "playlistplayer", "shufflevideos", "randomvideos", "playlistrandom", "shotsrandom", "shuffleshots", "randomplaylistplayer"]
-        if (mega4x4.includes(video) == true) {
-          window.location = "4x4_LoopGrid.html";
-        }
-        else if (anime4x4.includes(video) == true) {
-          window.location = "4x4_Anime.html";
-        }
-        else if (megashots.includes(video) == true) {
-          window.location = "1x1_MegaShots.html";
-        }
-        else if (mega6x6.includes(video) == true) {
-          window.location = "6x6_LoopGrid.html";
-        }
-        else if (mega_with_anime.includes(video) == true) {
-          window.location = "4x4_with_anime.html";
-        }
-        else if (random_video.includes(video) == true) {
-          window.location = "1x1_Random_Video.html";
-        }
-      },
-
-// #endregion --------------------------------------------------------------
-// #region                [ANIME] Mode
-//--------------------------------------------------------------------------
-
-      anime: function (input) {
-              input = input || "mode"
-              document.getElementById("video_one").src = "videos/MegaAnime.mp4#t=675"
-              document.getElementById("video_two").src = "videos/MegaAnime.mp4#t=1366"
-              document.getElementById("video_three").src = "videos/MegaAnime.mp4#t=2025"
-              document.getElementById("video_four").src = "videos/MegaAnime.mp4"
-            },
-
-
-// #endregion --------------------------------------------------------------
-// #region                
-//--------------------------------------------------------------------------
-
-  // [THREE] rows mode (6x6 legacy)
-  three: function (input) {
-                input = input || "mode"
-                addMiddleRow()
-              },
-
-  // [SIX] three videos per row
-  six: function (input) {
-                input = input || "mode"
-                sixBySix()
-              },
-
-  // [ONE] single video player
-  one: function (input) {
-                input = input || "mode"
-                singleVid()
-              },
-
-// #endregion --------------------------------------------------------------
-// #region                [MUTE] [VOLUME] 
-//--------------------------------------------------------------------------
-      mute: function (input) {
-        input = input || "fourth"
-        for (const x of muteDictionary_list) {
-          if (x.includes(input)) {
-            var frameIndex = muteDictionary_list.indexOf(x);
           }
-        }
-        if (frameIndex == undefined) {
-          this.echo('\nUse the "mute" command by indicating the frame you want to play/pause -- \nusing numbers, rows, columns, all, left, right, first, second, etc. to indicate frame\nE.g., "mute top" or "mute third"\n')
-        }
-        else {
-          if (videoList[frameIndex].volume == 0 ) {
-            videoList[frameIndex].volume = 1.0;
-          } else {
-            videoList[frameIndex].volume = 0;
-          };
-        }
-      },
-      volume: function (input) {
-        input = input || "fourth"
-        for (const x of muteDictionary_list) {
-          if (x.includes(input)) {
-            var frameIndex = muteDictionary_list.indexOf(x);
-          }
-        }
-        if (frameIndex == undefined) {
-          this.echo('\nUse the "mute" command by indicating the frame you want to play/pause -- \nusing numbers, rows, columns, all, left, right, first, second, etc. to indicate frame\nE.g., "mute top" or "mute third"\n')
-        }
-        else {
-          if (videoList[frameIndex].volume == 0) {
-            videoList[frameIndex].volume = 1.0;
-          } else {
-            videoList[frameIndex].volume = 0;
-          };
-        }
-      },
-// #endregion --------------------------------------------------------------
-// #region                [PLAY] [PAUSE]
-//--------------------------------------------------------------------------
-      play: function (input) {
-        input = input || "all"
-        for (const x of dictionaryList) {
-          if (x.includes(input)) {
-            var frameIndex = dictionaryList.indexOf(x);
-          }
-        }
-        if (frameIndex == undefined) {
-          this.echo('\nUse the "play" command by indicating the frame you want to play/pause -- \nusing numbers, rows, columns, all, left, right, first, second, etc. to indicate frame\nE.g., "play toprow" or "play first"\n')
-        }
-        else {
-          for (const i of inputMatch[frameIndex]) {
-            if (videoList[i].paused == true) {
-              videoList[i].play();
-            } else {
-              videoList[i].pause();
+        },
+        pause: function (input) {
+          input = input || "all"
+          for (const x of dictionaryList) {
+            if (x.includes(input)) {
+              var frameIndex = dictionaryList.indexOf(x);
             }
-          };
-        }
-      },
-      pause: function (input) {
-        input = input || "all"
-        for (const x of dictionaryList) {
-          if (x.includes(input)) {
-            var frameIndex = dictionaryList.indexOf(x);
           }
-        }
-        if (frameIndex == undefined) {
-          this.echo('\nUse the "play" command by indicating the frame you want to play/pause -- \nusing numbers, rows, columns, all, left, right, first, second, etc. to indicate frame\nE.g., "play toprow" or "play first"\n')
-        }
-        else {
-          for (const i of inputMatch[frameIndex]) {
-            if (videoList[i].paused == true) {
-              videoList[i].play();
-            } else {
-              videoList[i].pause();
-            }
-          };
-        }
-      },
-
-// #endregion --------------------------------------------------------------
-// #region                [NEW] Game
-//--------------------------------------------------------------------------     
-
-      reset: function() {
-
-        // ask user if they want to restart the scores or restart the scores and videos or just the videos
-
-        term.reset()
-      },
-      startover: function() {
-        term.reset()
-      },
-      new: function(element) {
-        if ( element == "game") {
-          term.reset()
-        }
-      },
-
-// #endregion --------------------------------------------------------------
-// #region                [START] Game 
-//--------------------------------------------------------------------------     
-      start: function () {
-        //  this.hide(); < how to solve this?
-        //  this.echo("Press the ~ Key")
-        this.clear()
-        this.echo("[[gb;red;]USE THE ~ KEY TO PLAY/PAUSE]\nGood Luck.\n")
-        this.echo("options: type 'mute' or 'more'")
-
-        // ------ LEVEL 1: Player 1 Answer ------ \\
-        this.push(function (player1Answer) {
-          if (player1Answer != undefined) {
-            if (timeCheck(player1Answer, answerKey, 0, 2) == undefined ) {
-              p1Score--;
-              this.echo("\nIncorrect. . .\n-1 Point\n\n[[u;;]Scores]\nPlayer 1: " + p1Score + "\n" + "Player 2: " + p2Score + "\n")
-            } else { 
-              p1Score += 2
-              this.echo("\nCorrect!\n-1 Point\n\n[[u;;]Scores]\nPlayer 1: " + p1Score + "\n" + "Player 2: " + p2Score + "\n");}          };
-
-        // ------ LEVEL 2: Player 2 Answer ------ \\
-          this.push(function (player2Answer) {
-
-
-            if (player2Answer != undefined) {
-                if (timeCheck(player1Answer, answerKey, 0, 2) == undefined ) {
-                  p2Score--;
-                  this.echo("\nIncorrect. . .\n-1 Point\n\n[[u;;]Scores]\nPlayer 1: " + p1Score + "\n" + "Player 2: " + p2Score + "\n")
-              } else { p2Score += 2;
-                this.echo("\nCorrect!\n-1 Point\n\n[[u;;]Scores]\nPlayer 1: " + p1Score + "\n" + "Player 2: " + p2Score + "\n");}
+          if (frameIndex == undefined) {
+            this.echo('\nUse the "play" command by indicating the frame you want to play/pause -- \nusing numbers, rows, columns, all, left, right, first, second, etc. to indicate frame\nE.g., "play toprow" or "play first"\n')
+          }
+          else {
+            for (const i of inputMatch[frameIndex]) {
+              if (videoList[i].paused == true) {
+                videoList[i].play();
+              } else {
+                videoList[i].pause();
+              }
             };
+          }
+        },
 
-            this.echo('Use ~ Key to Resume. Type "help" "more" "mute" "pause" etc. for options.')
-            this.pop();
-          }, { prompt: "[[b;#bcb6ff;black]\nPlayer 2's Turn]\nAnswer:",
+  // #endregion --------------------------------------------------------------
+  // #region                [NEW] Game
+  //--------------------------------------------------------------------------     
 
-               // assign term name so that term can be manually set using method 
-               // set_interpreter([interpreter, login]) — overwrite current interpreter.
-               name: "player2Response" }); 
-        }, { prompt: "[[b;#94fbab;black]\nPlayer 1's Turn]\nAnswer:",
-             name: "player1Response" },
-      )
-    },
-   
+        reset: function() {
 
-// #endregion --------------------------------------------------------------
-// #region                next...
-//-------------------------------------------------------------------------- 
+          // ask user if they want to restart the scores or restart the scores and videos or just the videos
 
+          term.reset()
+        },
+        startover: function() {
+          term.reset()
+        },
+        new: function(element) {
+          if ( element == "game") {
+            term.reset()
+          }
+        },
+
+  // #endregion --------------------------------------------------------------
+  // #region                [START] Game 
+  //--------------------------------------------------------------------------     
+        start: function () {
+          //  this.hide(); < how to solve this?
+          //  this.echo("Press the ~ Key")
+          this.clear()
+          this.echo("[[gb;red;]USE THE ~ KEY TO PLAY/PAUSE]\nGood Luck.\n")
+          this.echo("options: type 'mute' or 'more'")
+
+          // ------ LEVEL 1: Player 1 Answer ------ \\
+          this.push(function (player1Answer) {
+            if (player1Answer != undefined) {
+              if (timeCheck(player1Answer, answerKey, 0, 2) == undefined ) {
+                p1Score--;
+                this.echo("\nIncorrect. . .\n-1 Point\n\n[[u;;]Scores]\nPlayer 1: " + p1Score + "\n" + "Player 2: " + p2Score + "\n")
+              } else { 
+                p1Score += 2
+                this.echo("\nCorrect!\n-1 Point\n\n[[u;;]Scores]\nPlayer 1: " + p1Score + "\n" + "Player 2: " + p2Score + "\n");}          };
+
+          // ------ LEVEL 2: Player 2 Answer ------ \\
+            this.push(function (player2Answer) {
+
+
+              if (player2Answer != undefined) {
+                  if (timeCheck(player1Answer, answerKey, 0, 2) == undefined ) {
+                    p2Score--;
+                    this.echo("\nIncorrect. . .\n-1 Point\n\n[[u;;]Scores]\nPlayer 1: " + p1Score + "\n" + "Player 2: " + p2Score + "\n")
+                } else { p2Score += 2;
+                  this.echo("\nCorrect!\n-1 Point\n\n[[u;;]Scores]\nPlayer 1: " + p1Score + "\n" + "Player 2: " + p2Score + "\n");}
+              };
+
+              this.echo('Use ~ Key to Resume. Type "help" "more" "mute" "pause" etc. for options.')
+              this.pop();
+            }, { prompt: "[[b;#bcb6ff;black]\nPlayer 2's Turn]\nAnswer:",
+
+                // assign term name so that term can be manually set using method 
+                // set_interpreter([interpreter, login]) — overwrite current interpreter.
+                name: "player2Response" }); 
+          }, { prompt: "[[b;#94fbab;black]\nPlayer 1's Turn]\nAnswer:",
+              name: "player1Response" },
+        )
+      },
+    
+
+  // #endregion --------------------------------------------------------------
+  // #region                next...
+  //-------------------------------------------------------------------------- 
+
+      });
     });
-  });
 
 </script>
 
